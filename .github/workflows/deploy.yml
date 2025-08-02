@@ -1,0 +1,78 @@
+name: Build & Deploy Repository (apt-get)
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag-name:
+        type: string
+        description: 'Tag Name (apt-get):'
+        required: true
+      neo-version:
+        type: string
+        description: 'Neo Version (Example: 3.9.0):'
+        required: true
+
+env:
+  DOTNET_VERSION: 9.0.x
+  NEO_PATH: /tmp/npkgs
+  NEO_VERSION: ${{ github.event.inputs.neo-version }}
+  NEO_URL: https://github.com/neo-project/neo/releases/download
+
+jobs:
+  apt-get:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository (apt-get)
+      uses: actions/checkout@v4
+      with:
+        path: ./apt-repo
+        ref: var/www
+        fetch-depth: 0
+
+    - name: Install Tools
+      run: |
+        sudo apt install -y dpkg-dev gpg wget
+
+    - name: Create Build Directory (deb-pkgs)
+      run: |
+        mkdir -vp ${{ env.NEO_PATH }}
+        mkdir -vp ${{ env.NEO_PATH }}/neo-cli.v${{ env.NEO_VERSION }}-linux-x64
+
+    - name: Download (neo-cli)
+      working-directory: ${{ env.NEO_PATH }}/neo-cli.v${{ env.NEO_VERSION }}-linux-x64
+      run: |
+        wget ${{ env.NEO_URL }}/v${{ env.NEO_VERSION }}/neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
+
+    - name: Extract (neo-cli)
+      working-directory: ${{ env.NEO_PATH }}
+      run: |
+        mv -v neo-cli.v${{ env.NEO_VERSION }}-linux-x64 neo-cli_${{ env.NEO_VERSION }}-1_amd64
+        cd neo-cli_${{ env.NEO_VERSION }}-1_amd64
+        tar -zxvf neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
+        rm neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
+
+    - name: Setup
+      working-directory: ${{ env.NEO_PATH }}/neo-cli_${{ env.NEO_VERSION }}-1_amd64
+      run: |
+        mkdir -vp ./opt/neo-project/neo-cli
+        mkdir -vp ./usr/bin
+        mv -v * ./opt/neo-project/neo-cli
+        rm ./opt/neo-project/neo-cli/*.so 
+        mkdir -vp DEBIAN
+        echo "Package: neo-cli
+        Version: ${{ env.NEO_VERSION }}
+        Maintainer: neo-project
+        Depends: libleveldb-dev, libsnappy-dev, libsqlite3-dev
+        Architecture: amd64
+        Homepage: https://github.com/neo-project/neo
+        Description: neo cli node" > ./DEBIAN/control
+        ln -s ./opt/neo-project/neo-cli/neo-cli ./usr/bin/neo-cli
+        chmod -R a+rw ./opt/neo-project/neo-cli/*
+        chmod -R a+rw ./usr/bin/neo-cli
+
+    - name: Build Package
+      working-directory: ${{ env.NEO_PATH }}
+      run: |
+        dpkg --build neo-cli_${{ env.NEO_VERSION }}-1_amd64
