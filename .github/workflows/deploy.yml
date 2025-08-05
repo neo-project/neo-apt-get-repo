@@ -76,3 +76,9 @@ jobs:
       working-directory: ${{ env.NEO_PATH }}
       run: |
         dpkg --build neo-cli_${{ env.NEO_VERSION }}-1_amd64
+
+    - name: Info Package
+      working-directory: ${{ env.NEO_PATH }}
+      run: |
+        dpkg-deb --info neo-cli_${{ env.NEO_VERSION }}-1_amd64.deb
+        dpkg-deb --contents neo-cli_${{ env.NEO_VERSION }}-1_amd64.deb
