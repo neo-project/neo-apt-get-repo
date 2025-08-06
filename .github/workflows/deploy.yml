@@ -51,15 +51,14 @@ jobs:
         mv -v neo-cli.v${{ env.NEO_VERSION }}-linux-x64 neo-cli_${{ env.NEO_VERSION }}-1_amd64
         cd neo-cli_${{ env.NEO_VERSION }}-1_amd64
         tar -zxvf neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
-        rm neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
+        rm -v neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
+        mv -v * ./opt/neo-project/neo-cli
+        rm -v ./opt/neo-project/neo-cli/*.so
 
     - name: Setup
       working-directory: ${{ env.NEO_PATH }}/neo-cli_${{ env.NEO_VERSION }}-1_amd64
       run: |
-        mkdir -vp ./opt/neo-project/neo-cli
         mkdir -vp ./usr/bin
-        mv -vR * ./opt/neo-project/neo-cli
-        rm -v ./opt/neo-project/neo-cli/*.so 
         mkdir -vp DEBIAN
         echo "Package: neo-cli
         Version: ${{ env.NEO_VERSION }}
