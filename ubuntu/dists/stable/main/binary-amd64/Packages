@@ -1,0 +1,13 @@
+Package: neo-cli
+Version: 3.8.2
+Architecture: amd64
+Maintainer: neo-project
+Depends: libleveldb-dev, libsnappy-dev, libsqlite3-dev
+Filename: ./pool/main/neo-cli_3.8.2-1_amd64.deb
+Size: 59108548
+MD5sum: d3c3fb6fd9b1094df07e5b24bd3fc26f
+SHA1: c54d9312ceec91221ca028d696a3d4a3bfb7c930
+SHA256: 70afb4a687d0696d06938df4dda4d042c6ceeebdc599355b7e189e7fea19a1ae
+Homepage: https://github.com/neo-project/neo
+Description: neo cli node
+
