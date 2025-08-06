@@ -51,8 +51,8 @@ jobs:
     - name: Extract (neo-cli)
       working-directory: ${{ env.NEO_PATH }}
       run: |
-        mv -v neo-node.v${{ env.NEO_VERSION }}-linux-x64 neo-mode_${{ env.NEO_VERSION }}-1_amd64
-        cd neo-cli_${{ env.NEO_VERSION }}-1_amd64
+        mv -v neo-node.v${{ env.NEO_VERSION }}-linux-x64 neo-node_${{ env.NEO_VERSION }}-1_amd64
+        cd neo-node_${{ env.NEO_VERSION }}-1_amd64
         tar -zxvf neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
         rm -v neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
 
