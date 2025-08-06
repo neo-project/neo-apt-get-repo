@@ -58,8 +58,8 @@ jobs:
       run: |
         mkdir -vp ./opt/neo-project/neo-cli
         mkdir -vp ./usr/bin
-        mv -v * ./opt/neo-project/neo-cli
-        rm ./opt/neo-project/neo-cli/*.so 
+        mv -vR * ./opt/neo-project/neo-cli
+        rm -v ./opt/neo-project/neo-cli/*.so 
         mkdir -vp DEBIAN
         echo "Package: neo-cli
         Version: ${{ env.NEO_VERSION }}
