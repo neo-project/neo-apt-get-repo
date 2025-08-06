@@ -41,23 +41,23 @@ jobs:
     - name: Create Build Directory (deb-pkgs)
       run: |
         mkdir -vp ${{ env.NEO_PATH }}
-        mkdir -vp ${{ env.NEO_PATH }}/neo-cli.v${{ env.NEO_VERSION }}-linux-x64
+        mkdir -vp ${{ env.NEO_PATH }}/neo-node.v${{ env.NEO_VERSION }}-linux-x64
 
     - name: Download (neo-cli)
-      working-directory: ${{ env.NEO_PATH }}/neo-cli.v${{ env.NEO_VERSION }}-linux-x64
+      working-directory: ${{ env.NEO_PATH }}/neo-node.v${{ env.NEO_VERSION }}-linux-x64
       run: |
         wget ${{ env.NEO_URL }}/v${{ env.NEO_VERSION }}/neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
 
     - name: Extract (neo-cli)
       working-directory: ${{ env.NEO_PATH }}
       run: |
-        mv -v neo-cli.v${{ env.NEO_VERSION }}-linux-x64 neo-cli_${{ env.NEO_VERSION }}-1_amd64
+        mv -v neo-node.v${{ env.NEO_VERSION }}-linux-x64 neo-mode_${{ env.NEO_VERSION }}-1_amd64
         cd neo-cli_${{ env.NEO_VERSION }}-1_amd64
         tar -zxvf neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
         rm -v neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
 
     - name: Setup
-      working-directory: ${{ env.NEO_PATH }}/neo-cli_${{ env.NEO_VERSION }}-1_amd64
+      working-directory: ${{ env.NEO_PATH }}/neo-node_${{ env.NEO_VERSION }}-1_amd64
       run: |
         mkdir -vp ./opt/neo-project/neo-cli
         mv -v $(ls . | grep -v 'opt') ./opt/neo-project/neo-cli
@@ -78,19 +78,19 @@ jobs:
     - name: Build Package
       working-directory: ${{ env.NEO_PATH }}
       run: |
-        dpkg --build neo-cli_${{ env.NEO_VERSION }}-1_amd64
+        dpkg --build neo-node_${{ env.NEO_VERSION }}-1_amd64
 
     - name: Info Package
       working-directory: ${{ env.NEO_PATH }}
       run: |
-        dpkg-deb --info neo-cli_${{ env.NEO_VERSION }}-1_amd64.deb
-        dpkg-deb --contents neo-cli_${{ env.NEO_VERSION }}-1_amd64.deb
+        dpkg-deb --info neo-node_${{ env.NEO_VERSION }}-1_amd64.deb
+        dpkg-deb --contents neo-node_${{ env.NEO_VERSION }}-1_amd64.deb
 
     - name: Setup Repo
       working-directory: ./apt-repo/ubuntu
       run: |
         ls -la
-        mv -v ${{ env.NEO_PATH }}/neo-cli_${{ env.NEO_VERSION }}-1_amd64.deb ./pool/main
+        mv -v ${{ env.NEO_PATH }}/neo-node_${{ env.NEO_VERSION }}-1_amd64.deb ./pool/main
         dpkg-scanpackages --arch amd64 ./pool/ > ./dists/stable/main/binary-amd64/Packages
         cat ./dists/stable/main/binary-amd64/Packages | gzip -9 > ./dists/stable/main/binary-amd64/Packages.gz
 
