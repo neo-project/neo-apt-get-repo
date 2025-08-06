@@ -95,9 +95,10 @@ jobs:
         cat ./dists/stable/main/binary-amd64/Packages | gzip -9 > ./dists/stable/main/binary-amd64/Packages.gz
 
     - name: Create Release
+      working-directory: ./apt-repo/ubuntu/
       run: |
-        chmod +x ./tools/scripts/Release.sh
-        ./tools/scripts/Release.sh > ./apt-repo/ubuntu/dists/stable/Release
+        chmod +x ../../tools/scripts/Release.sh
+        ../../tools/scripts/Release.sh > ./apt-repo/ubuntu/dists/stable/Release
 
     - name: Commit
       working-directory: ./apt-repo
