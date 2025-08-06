@@ -98,7 +98,7 @@ jobs:
       working-directory: ./apt-repo/ubuntu/
       run: |
         chmod +x ../../tools/scripts/Release.sh
-        ../../tools/scripts/Release.sh > ./apt-repo/ubuntu/dists/stable/Release
+        ../../tools/scripts/Release.sh > ./dists/stable/Release
 
     - name: Commit
       working-directory: ./apt-repo
