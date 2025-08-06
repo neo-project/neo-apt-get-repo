@@ -57,7 +57,7 @@ jobs:
       working-directory: ${{ env.NEO_PATH }}/neo-cli_${{ env.NEO_VERSION }}-1_amd64
       run: |
         mkdir -vp ./opt/neo-project/neo-cli
-        mv -v $(ls * | grep -v 'opt') ./opt/neo-project/neo-cli
+        mv -v $(ls . | grep -v 'opt') ./opt/neo-project/neo-cli
         rm -v ./opt/neo-project/neo-cli/*.so
         mkdir -vp ./usr/bin
         mkdir -vp DEBIAN
