@@ -21,14 +21,14 @@ jobs:
 
     steps:
     - name: Checkout Repository (apt-get)
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.2.2
       with:
         path: ./apt-repo
         ref: var/www
         fetch-depth: 0
 
     - name: Checkout Repository (Master)
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4.2.2
       with:
         path: ./tools
         ref: master
