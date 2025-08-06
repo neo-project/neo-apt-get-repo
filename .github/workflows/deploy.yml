@@ -3,10 +3,6 @@ name: Build & Deploy Repository (apt-get)
 on:
   workflow_dispatch:
     inputs:
-      tag-name:
-        type: string
-        description: 'Tag Name:'
-        required: true
       neo-version:
         type: string
         description: 'Neo Version (Example: 3.9.0):'
@@ -29,6 +25,11 @@ jobs:
       with:
         path: ./apt-repo
         ref: var/www
+        fetch-depth: 0
+
+    - name: Checkout Repository (apt-get)
+      uses: actions/checkout@v4
+      with:
         fetch-depth: 0
 
     - name: Install Tools
@@ -82,3 +83,25 @@ jobs:
       run: |
         dpkg-deb --info neo-cli_${{ env.NEO_VERSION }}-1_amd64.deb
         dpkg-deb --contents neo-cli_${{ env.NEO_VERSION }}-1_amd64.deb
+
+    - name: Setup Repo
+      working-directory: ./apt-repo
+      run: |
+        mv -v ${{ env.NEO_PATH }}/neo-cli_${{ env.NEO_VERSION }}-1_amd64.deb ./pool/main
+        dpkg-scanpackages --arch amd64 ./pool/ > ./dists/stable/main/binary-amd64/Packages
+        cat ./dists/stable/main/binary-amd64/Packages | gzip -9 > ./dists/stable/main/binary-amd64/Packages.gz
+
+    - name: Create Release
+      working-directory: ./scripts
+      run: |
+        chmod +x Release.sh
+        ./Release.sh > ./apt-repo/dists/stable/Release
+
+    - name: Commit
+      working-directory: ./apt-repo
+      run: |
+        git config user.name "$(gh api /users/${{ github.actor }} | jq .name -r)"
+        git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+        git add .
+        git commit -m "Release ${{ env.NEO_VERSION }}"
+        git push
