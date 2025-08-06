@@ -61,14 +61,14 @@ jobs:
         rm -v ./opt/neo-project/neo-cli/*.so
         mkdir -vp ./usr/bin
         mkdir -vp DEBIAN
-        echo "Package: neo-cli \
-        Version: ${{ env.NEO_VERSION }} \
-        Maintainer: neo-project \
-        Depends: libleveldb-dev, libsnappy-dev, libsqlite3-dev \
-        Architecture: amd64 \
-        Homepage: https://github.com/neo-project/neo \
+        echo "Package: neo-cli
+        Version: ${{ env.NEO_VERSION }}
+        Maintainer: neo-project
+        Depends: libleveldb-dev, libsnappy-dev, libsqlite3-dev
+        Architecture: amd64
+        Homepage: https://github.com/neo-project/neo
         Description: neo cli node" > ./DEBIAN/control
-        ln -s ./opt/neo-project/neo-cli/neo-cli ./usr/bin/neo-cli
+        ln -sr ./opt/neo-project/neo-cli/neo-cli ./usr/bin/neo-cli
         chmod -R a+rw ./opt/neo-project/neo-cli/*
         chmod -R a+rw ./usr/bin/neo-cli
 
