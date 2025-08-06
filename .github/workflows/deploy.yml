@@ -52,6 +52,7 @@ jobs:
         cd neo-cli_${{ env.NEO_VERSION }}-1_amd64
         tar -zxvf neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
         rm -v neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
+        mkdir -vp ./opt/neo-project/neo-cli
         mv -v * ./opt/neo-project/neo-cli
         rm -v ./opt/neo-project/neo-cli/*.so
 
