@@ -101,6 +101,8 @@ jobs:
 
     - name: Commit
       working-directory: ./apt-repo
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         git config user.name "$(gh api /users/${{ github.actor }} | jq .name -r)"
         git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
