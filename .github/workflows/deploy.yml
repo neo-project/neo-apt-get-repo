@@ -23,14 +23,14 @@ jobs:
     - name: Checkout Repository (apt-get)
       uses: actions/checkout@v4
       with:
-        path: /apt-repo
+        path: ./apt-repo
         ref: var/www
         fetch-depth: 0
 
     - name: Checkout Repository (Master)
       uses: actions/checkout@v4
       with:
-        path: /tools
+        path: ./tools
         ref: master
         fetch-depth: 0
 
@@ -87,20 +87,21 @@ jobs:
         dpkg-deb --contents neo-cli_${{ env.NEO_VERSION }}-1_amd64.deb
 
     - name: Setup Repo
-      working-directory: /apt-repo
+      working-directory: ./apt-repo
       run: |
+        ls -la
         mv -v ${{ env.NEO_PATH }}/neo-cli_${{ env.NEO_VERSION }}-1_amd64.deb ./pool/main
         dpkg-scanpackages --arch amd64 ./pool/ > ./dists/stable/main/binary-amd64/Packages
         cat ./dists/stable/main/binary-amd64/Packages | gzip -9 > ./dists/stable/main/binary-amd64/Packages.gz
 
     - name: Create Release
-      working-directory: /tools/scripts
+      working-directory: ./tools/scripts
       run: |
         chmod +x Release.sh
         ./Release.sh > ./apt-repo/dists/stable/Release
 
     - name: Commit
-      working-directory: /apt-repo
+      working-directory: ./apt-repo
       run: |
         git config user.name "$(gh api /users/${{ github.actor }} | jq .name -r)"
         git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
