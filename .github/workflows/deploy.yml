@@ -38,6 +38,12 @@ jobs:
       run: |
         sudo apt install -y dpkg-dev gpg wget
 
+    - name: Import GPG key Secret Key (neo-project)
+      run: |
+        echo -n "${{ secrets.GPG_KEY_PRIVATE }}" | \
+        base64 --decode | \
+        gpg --import --passphrase ${{ secrets.GPG_KEY_PASSWORD }} --batch
+
     - name: Create Build Directory (deb-pkgs)
       run: |
         mkdir -vp ${{ env.NEO_PATH }}
@@ -99,6 +105,7 @@ jobs:
       run: |
         chmod +x ../../tools/scripts/Release.sh
         ../../tools/scripts/Release.sh > ./dists/stable/Release
+        cat ./dists/stable/Release | gpg --default-key neo-project -abs --clearsign > ./dists/stable/InRelease
 
     - name: Commit
       working-directory: ./apt-repo
