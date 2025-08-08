@@ -1,0 +1,41 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA384
+
+Origin: neo-project
+Label: neo-project
+Suite: stable
+Codename: stable
+Version: 1.0
+Architectures: amd64 arm64
+Components: main
+Description: Neo Blockchain Tools
+Date: Fri, 08 Aug 2025 07:01:31 +0000
+MD5Sum:
+ fcf1a4743697295884eaf4dd49499833 59108312 pool/main/neo-node_3.8.2-1_amd64.deb
+ d41d8cd98f00b204e9800998ecf8427e 0 pool/main/.gitkeep
+ 473abff665c5eb771fd24bbf05a73245 342 dists/stable/Release
+ 244ee7871bda0e4257dbd065c520c261 324 dists/stable/main/binary-amd64/Packages.gz
+ d41d8cd98f00b204e9800998ecf8427e 0 dists/stable/main/binary-amd64/.gitkeep
+ d03f54c9d6b5d4f9315966b87edcb354 428 dists/stable/main/binary-amd64/Packages
+SHA1:
+ fe5924ec946ccce507729e531d64284c5d561c48 59108312 pool/main/neo-node_3.8.2-1_amd64.deb
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 pool/main/.gitkeep
+ dda3cf0b6170dc14d32a2a7d06c5611afa27931c 793 dists/stable/Release
+ 50fa8ca2f0276df3e0d6786eb87b66391a5482cc 324 dists/stable/main/binary-amd64/Packages.gz
+ da39a3ee5e6b4b0d3255bfef95601890afd80709 0 dists/stable/main/binary-amd64/.gitkeep
+ c017d28d353a4d3597a2cf1a116304723031fc93 428 dists/stable/main/binary-amd64/Packages
+SHA256:
+ c0740ee3ed1ea8fd66994696830c525f2637a223cb28779a05a0dae64b003a0a 59108312 pool/main/neo-node_3.8.2-1_amd64.deb
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 pool/main/.gitkeep
+ e05e83edeb8c6a31d1da7d46bf45591160f9f1680b07e91b0704628322fb36b5 1326 dists/stable/Release
+ 7a1e849bef0048deeccfd923bb9e7a586f31461a2829df21b2a27447bd999365 324 dists/stable/main/binary-amd64/Packages.gz
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 dists/stable/main/binary-amd64/.gitkeep
+ dbf765c4d71854de19fe84e179ce09172440c4d30dbbaf0daab7f8c8bd99340c 428 dists/stable/main/binary-amd64/Packages
+-----BEGIN PGP SIGNATURE-----
+
+iKQEARMJACwWIQQH7IEZpD6mWgGD0mnFS+JInogU+wUCaJWgyw4cYWJvdXRAbmVv
+Lm9yZwAKCRDFS+JInogU+8lmAXwJnGwhQE4up4XnHMMz6C9crQwArNpZKR/NgGl8
+O9MV7XoHxCk6GAefmLI7C7dT/awBf2vprv5c263qML1Ed/NnvTMXo6ufTRObbTdb
+rev3ZlZClwWlBxF72WyQ/5+5rPxNww==
+=ygGv
+-----END PGP SIGNATURE-----
