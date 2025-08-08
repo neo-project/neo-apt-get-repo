@@ -104,7 +104,7 @@ jobs:
       run: |
         chmod +x ../../tools/scripts/Release.sh
         ../../tools/scripts/Release.sh > ./dists/stable/Release
-        cat ./dists/stable/Release | gpg --default-key neo-project -abs --clearsign --passphrase ${{ secrets.GPG_KEY_PASSWORD }} --batch > ./dists/stable/InRelease
+        cat ./dists/stable/Release | gpg --default-key neo-project -abs --clearsign --passphrase ${{ secrets.GPG_KEY_PASSWORD }} --pinentry-mode loopback --batch > ./dists/stable/InRelease
 
     - name: Commit
       working-directory: ./apt-repo
