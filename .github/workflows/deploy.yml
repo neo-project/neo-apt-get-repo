@@ -21,14 +21,14 @@ jobs:
 
     steps:
     - name: Checkout Repository (apt-get)
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v5.0.0
       with:
         path: ./apt-repo
         ref: var/www
         fetch-depth: 0
 
     - name: Checkout Repository (Master)
-      uses: actions/checkout@v4.2.2
+      uses: actions/checkout@v5.0.0
       with:
         path: ./tools
         ref: master
@@ -37,6 +37,11 @@ jobs:
     - name: Install Tools
       run: |
         sudo apt install -y dpkg-dev gpg wget
+
+    - name: Import GPG key Secret Key (neo-project)
+      run: |
+        echo -n "${{ secrets.GPG_KEY_PRIVATE }}" | \
+        gpg --import --passphrase ${{ secrets.GPG_KEY_PASSWORD }} --batch
 
     - name: Create Build Directory (deb-pkgs)
       run: |
@@ -99,6 +104,7 @@ jobs:
       run: |
         chmod +x ../../tools/scripts/Release.sh
         ../../tools/scripts/Release.sh > ./dists/stable/Release
+        cat ./dists/stable/Release | gpg --default-key neo-project -abs --clearsign --passphrase ${{ secrets.GPG_KEY_PASSWORD }} --pinentry-mode loopback --batch > ./dists/stable/InRelease
 
     - name: Commit
       working-directory: ./apt-repo
