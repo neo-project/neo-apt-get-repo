@@ -106,7 +106,12 @@ jobs:
       run: |
         chmod +x ../../tools/scripts/Release.sh
         ../../tools/scripts/Release.sh > ./dists/stable/Release
-        cat ./dists/stable/Release | gpg --default-key neo-project -abs --clearsign --passphrase ${{ secrets.GPG_KEY_PASSWORD }} --pinentry-mode loopback --batch > ./dists/stable/InRelease
+       gpg --batch --yes \
+    --local-user "neo-project" \
+    --pinentry-mode loopback \
+    --passphrase "${{ secrets.GPG_KEY_PASSWORD }}" \
+    --output ./dists/stable/InRelease \
+    --clearsign ./dists/stable/Release
 
     - name: Commit
       working-directory: ./apt-repo
