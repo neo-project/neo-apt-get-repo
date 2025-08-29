@@ -41,7 +41,7 @@ jobs:
     - name: Import GPG key Secret Key (neo-project)
       run: |
         echo -n "${{ secrets.GPG_KEY_PRIVATE }}" | \
-        gpg --import --passphrase ${{ secrets.GPG_KEY_PASSWORD }} --batch
+        gpg --batch --yes --pinentry-mode loopback --passphrase ${{ secrets.GPG_KEY_PASSWORD }} --import
 
     - name: Create Build Directory (deb-pkgs)
       run: |
