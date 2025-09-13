@@ -49,13 +49,19 @@ jobs:
       run: |
         mkdir -vp ${{ env.NEO_PATH }}
         mkdir -vp ${{ env.NEO_PATH }}/neo-node.v${{ env.NEO_VERSION }}-linux-x64
+        mkdir -vp ${{ env.NEO_PATH }}/neo-node.v${{ env.NEO_VERSION }}-linux-arm64
 
-    - name: Download (neo-cli)
+    - name: Download x64 (neo-cli)
       working-directory: ${{ env.NEO_PATH }}/neo-node.v${{ env.NEO_VERSION }}-linux-x64
       run: |
         wget ${{ env.NEO_URL }}/v${{ env.NEO_VERSION }}/neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
 
-    - name: Extract (neo-cli)
+    - name: Download arm64 (neo-cli)
+      working-directory: ${{ env.NEO_PATH }}/neo-node.v${{ env.NEO_VERSION }}-linux-arm64
+      run: |
+        wget ${{ env.NEO_URL }}/v${{ env.NEO_VERSION }}/neo-cli.v${{ env.NEO_VERSION }}-linux-arm64.tar.gz
+
+    - name: Extract x64 (neo-cli)
       working-directory: ${{ env.NEO_PATH }}
       run: |
         mv -v neo-node.v${{ env.NEO_VERSION }}-linux-x64 neo-node_${{ env.NEO_VERSION }}-1_amd64
@@ -63,7 +69,15 @@ jobs:
         tar -zxvf neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
         rm -v neo-cli.v${{ env.NEO_VERSION }}-linux-x64.tar.gz
 
-    - name: Setup
+    - name: Extract arm64 (neo-cli)
+      working-directory: ${{ env.NEO_PATH }}
+      run: |
+        mv -v neo-node.v${{ env.NEO_VERSION }}-linux-arm64 neo-node_${{ env.NEO_VERSION }}-1_arm64
+        cd neo-node_${{ env.NEO_VERSION }}-1_arm64
+        tar -zxvf neo-cli.v${{ env.NEO_VERSION }}-linux-arm64.tar.gz
+        rm -v neo-cli.v${{ env.NEO_VERSION }}-linux-arm64.tar.gz
+
+    - name: Setup x64
       working-directory: ${{ env.NEO_PATH }}/neo-node_${{ env.NEO_VERSION }}-1_amd64
       run: |
         mkdir -vp ./opt/neo-project/neo-cli
@@ -82,36 +96,61 @@ jobs:
         chmod -R a+rw ./opt/neo-project/neo-cli/*
         chmod -R a+rw ./usr/bin/neo-cli
 
+    - name: Setup arm64
+      working-directory: ${{ env.NEO_PATH }}/neo-node_${{ env.NEO_VERSION }}-1_arm64
+      run: |
+        mkdir -vp ./opt/neo-project/neo-cli
+        mv -v $(ls . | grep -v 'opt') ./opt/neo-project/neo-cli
+        rm -v ./opt/neo-project/neo-cli/*.so
+        mkdir -vp ./usr/bin
+        mkdir -vp DEBIAN
+        echo "Package: neo-cli
+        Version: ${{ env.NEO_VERSION }}
+        Maintainer: neo-project
+        Depends: libleveldb-dev, libsnappy-dev, libsqlite3-dev
+        Architecture: arm64
+        Homepage: https://github.com/neo-project/neo
+        Description: neo cli node" > ./DEBIAN/control
+        ln -sr ./opt/neo-project/neo-cli/neo-cli ./usr/bin/neo-cli
+        chmod -R a+rw ./opt/neo-project/neo-cli/*
+        chmod -R a+rw ./usr/bin/neo-cli
+
     - name: Build Package
       working-directory: ${{ env.NEO_PATH }}
       run: |
         dpkg --build neo-node_${{ env.NEO_VERSION }}-1_amd64
+        dpkg --build neo-node_${{ env.NEO_VERSION }}-1_arm64
 
     - name: Info Package
       working-directory: ${{ env.NEO_PATH }}
       run: |
         dpkg-deb --info neo-node_${{ env.NEO_VERSION }}-1_amd64.deb
         dpkg-deb --contents neo-node_${{ env.NEO_VERSION }}-1_amd64.deb
+        dpkg-deb --info neo-node_${{ env.NEO_VERSION }}-1_arm64.deb
+        dpkg-deb --contents neo-node_${{ env.NEO_VERSION }}-1_arm64.deb
 
     - name: Setup Repo
       working-directory: ./apt-repo/ubuntu
       run: |
         ls -la
         mv -v ${{ env.NEO_PATH }}/neo-node_${{ env.NEO_VERSION }}-1_amd64.deb ./pool/main
+        mv -v ${{ env.NEO_PATH }}/neo-node_${{ env.NEO_VERSION }}-1_arm64.deb ./pool/main
         dpkg-scanpackages --arch amd64 ./pool/ > ./dists/stable/main/binary-amd64/Packages
+        dpkg-scanpackages --arch arm64 ./pool/ > ./dists/stable/main/binary-arm64/Packages
         cat ./dists/stable/main/binary-amd64/Packages | gzip -9 > ./dists/stable/main/binary-amd64/Packages.gz
+        cat ./dists/stable/main/binary-arm64/Packages | gzip -9 > ./dists/stable/main/binary-arm64/Packages.gz
 
     - name: Create Release
       working-directory: ./apt-repo/ubuntu/
       run: |
         chmod +x ../../tools/scripts/Release.sh
         ../../tools/scripts/Release.sh > ./dists/stable/Release
-       gpg --batch --yes \
-    --local-user "neo-project" \
-    --pinentry-mode loopback \
-    --passphrase "${{ secrets.GPG_KEY_PASSWORD }}" \
-    --output ./dists/stable/InRelease \
-    --clearsign ./dists/stable/Release
+        gpg --batch --yes \
+        --local-user "neo-project" \
+        --pinentry-mode loopback \
+        --passphrase "${{ secrets.GPG_KEY_PASSWORD }}" \
+        --output ./dists/stable/InRelease \
+        --clearsign ./dists/stable/Release
 
     - name: Commit
       working-directory: ./apt-repo
